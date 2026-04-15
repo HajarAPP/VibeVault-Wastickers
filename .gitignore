@@ -7,25 +7,23 @@
 build/
 app/build/
 
-# ── Keystore files — NEVER commit these ──
+# ── Keystore files — NEVER commit ──
 *.jks
 *.keystore
-vibevault.jks
 
-# ── Local config (has your SDK path) ──
+# ── Local config (SDK path, machine-specific) ──
 local.properties
 
-# ── Android Studio IDE files ──
+# ── Android Studio / IDE ──
 *.iml
 .idea/
 .DS_Store
+**/.DS_Store
 *.swp
 *~
+.vscode/
 
 # ── Captured output / profiling ──
 captures/
 .externalNativeBuild/
 .cxx/
-
-# ── Generated Files ──
-app/src/main/java/**/BuildConfig.java

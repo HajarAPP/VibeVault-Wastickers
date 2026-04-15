@@ -1,57 +1,31 @@
 # ╔══════════════════════════════════════════════════════════════╗
-# ║          VibeVault — Android CI/CD Workflow                  ║
-# ║          Builds a signed release APK on every push           ║
+# ║          VibeVault — Android CI Build Workflow               ║
 # ╚══════════════════════════════════════════════════════════════╝
-#
-# REQUIRED GITHUB SECRETS (Settings → Secrets and variables → Actions):
-# ─────────────────────────────────────────────────────────────────────
-#   KEYSTORE_BASE64       → base64-encoded .jks keystore file
-#                           Generate with: base64 -i vibevault.jks | pbcopy
-#   KEYSTORE_PASSWORD     → your keystore password
-#   KEY_ALIAS             → your key alias (e.g. vibevault)
-#   KEY_PASSWORD          → your key password
-#
-# OPTIONAL SECRETS:
-#   ADMOB_APP_ID          → real AdMob App ID (replaces test ID at build time)
-#
-# To generate a keystore for the first time:
-#   keytool -genkey -v -keystore vibevault.jks -keyalg RSA \
-#     -keysize 2048 -validity 10000 -alias vibevault
 
-name: Android CI — Build & Sign APK
+name: Android CI — Build APK
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [ main, master ]
   pull_request:
-    branches:
-      - main
-      - master
-  # Allow manual trigger from the Actions tab
+    branches: [ main, master ]
   workflow_dispatch:
 
-# Cancel any in-progress run for the same branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    name: Build Signed Release APK
+    name: Build APK
     runs-on: ubuntu-latest
 
     steps:
-      # ─────────────────────────────────────────────
-      # 1. Check out source code
-      # ─────────────────────────────────────────────
+      # ── 1. Checkout ──
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ─────────────────────────────────────────────
-      # 2. Set up Java 17 (required for AGP 8.x)
-      # ─────────────────────────────────────────────
+      # ── 2. Set up JDK 17 (required for AGP 8.x) ──
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -59,23 +33,11 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # ─────────────────────────────────────────────
-      # 3. Decode and write the keystore file
-      # ─────────────────────────────────────────────
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/vibevault.jks
-          echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/vibevault.jks" >> $GITHUB_ENV
-
-      # ─────────────────────────────────────────────
-      # 4. Make Gradle wrapper executable
-      # ─────────────────────────────────────────────
+      # ── 3. Make gradlew executable ──
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # ─────────────────────────────────────────────
-      # 5. Cache Gradle files for faster builds
-      # ─────────────────────────────────────────────
+      # ── 4. Cache Gradle ──
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -86,63 +48,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # ─────────────────────────────────────────────
-      # 6. Run lint checks
-      # ─────────────────────────────────────────────
-      - name: Run Lint
-        run: ./gradlew lintRelease
-        continue-on-error: true   # Don't block the build on lint warnings
+      # ── 5. Build debug APK (no signing needed) ──
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --stacktrace
 
-      # ─────────────────────────────────────────────
-      # 7. Upload lint report as artifact
-      # ─────────────────────────────────────────────
-      - name: Upload lint report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-report
-          path: app/build/reports/lint-results-release.html
-
-      # ─────────────────────────────────────────────
-      # 8. Build signed release APK
-      # ─────────────────────────────────────────────
-      - name: Build signed release APK
-        env:
-          KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          ./gradlew assembleRelease \
-            -Pandroid.injected.signing.store.file=$KEYSTORE_PATH \
-            -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
-            -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-            -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-
-      # ─────────────────────────────────────────────
-      # 9. Rename APK with version + build number
-      # ─────────────────────────────────────────────
+      # ── 6. Rename APK ──
       - name: Rename APK
         run: |
           BUILD_NUMBER=${{ github.run_number }}
-          APK_NAME="VibeVault-v1.0-build${BUILD_NUMBER}.apk"
-          mv app/build/outputs/apk/release/app-release.apk \
-             app/build/outputs/apk/release/$APK_NAME
+          APK_NAME="VibeVault-debug-build${BUILD_NUMBER}.apk"
+          mv app/build/outputs/apk/debug/app-debug.apk \
+             app/build/outputs/apk/debug/$APK_NAME
           echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
 
-      # ─────────────────────────────────────────────
-      # 10. Upload signed APK as downloadable artifact
-      # ─────────────────────────────────────────────
-      - name: Upload signed APK
+      # ── 7. Upload APK artifact ──
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: app/build/outputs/apk/release/${{ env.APK_NAME }}
+          path: app/build/outputs/apk/debug/${{ env.APK_NAME }}
           retention-days: 30
 
-      # ─────────────────────────────────────────────
-      # 11. Print build summary
-      # ─────────────────────────────────────────────
+      # ── 8. Build summary ──
       - name: Build summary
         run: |
           echo "### ✅ Build Complete" >> $GITHUB_STEP_SUMMARY
@@ -151,7 +78,6 @@ jobs:
           echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| APK | \`${{ env.APK_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Build # | ${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
-          APK_SIZE=$(du -sh app/build/outputs/apk/release/${{ env.APK_NAME }} | cut -f1)
-          echo "| APK Size | $APK_SIZE |" >> $GITHUB_STEP_SUMMARY
+          APK_SIZE=$(du -sh app/build/outputs/apk/debug/${{ env.APK_NAME }} | cut -f1)
+          echo "| Size | $APK_SIZE |" >> $GITHUB_STEP_SUMMARY
