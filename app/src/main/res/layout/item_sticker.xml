@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/sticker_grid_spacing">
+
+    <ImageView
+        android:id="@+id/sticker_image"
+        android:layout_width="@dimen/sticker_grid_item_size"
+        android:layout_height="@dimen/sticker_grid_item_size"
+        android:scaleType="fitCenter"
+        android:layout_gravity="center"
+        android:contentDescription="Sticker" />
+</FrameLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">16dp</dimen>
+    <dimen name="spacing_lg">24dp</dimen>
+    <dimen name="spacing_xl">32dp</dimen>
+    <dimen name="spacing_xxl">48dp</dimen>
+
+    <!-- Card -->
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+
+    <!-- Button -->
+    <dimen name="btn_corner_radius">12dp</dimen>
+    <dimen name="btn_height">48dp</dimen>
+    <dimen name="btn_padding_h">24dp</dimen>
+
+    <!-- Tray Icon -->
+    <dimen name="tray_icon_size">56dp</dimen>
+
+    <!-- Sticker Grid -->
+    <dimen name="sticker_grid_item_size">96dp</dimen>
+    <dimen name="sticker_grid_spacing">8dp</dimen>
+
+    <!-- Banner Ad -->
+    <dimen name="banner_ad_height">60dp</dimen>
+
+    <!-- Text Sizes -->
+    <dimen name="text_title">22sp</dimen>
+    <dimen name="text_subtitle">16sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_badge">10sp</dimen>
+
+    <!-- Header -->
+    <dimen name="header_height">120dp</dimen>
+</resources>

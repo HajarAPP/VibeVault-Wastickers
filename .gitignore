@@ -1,0 +1,31 @@
+# ════════════════════════════════════════════
+# VibeVault Android — .gitignore
+# ════════════════════════════════════════════
+
+# ── Gradle build outputs ──
+.gradle/
+build/
+app/build/
+
+# ── Keystore files — NEVER commit these ──
+*.jks
+*.keystore
+vibevault.jks
+
+# ── Local config (has your SDK path) ──
+local.properties
+
+# ── Android Studio IDE files ──
+*.iml
+.idea/
+.DS_Store
+*.swp
+*~
+
+# ── Captured output / profiling ──
+captures/
+.externalNativeBuild/
+.cxx/
+
+# ── Generated Files ──
+app/src/main/java/**/BuildConfig.java

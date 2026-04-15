@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Background Colors -->
+    <color name="cyber_bg_primary">#0A0A1A</color>
+    <color name="cyber_bg_card">#12122B</color>
+    <color name="cyber_bg_surface">#1A1A3E</color>
+    <color name="cyber_bg_elevated">#222255</color>
+
+    <!-- Neon Accent Colors -->
+    <color name="neon_pink">#FF00FF</color>
+    <color name="neon_cyan">#00FFFF</color>
+    <color name="neon_purple">#8B5CF6</color>
+    <color name="neon_green">#39FF14</color>
+    <color name="neon_blue">#4D7CFF</color>
+
+    <!-- Holographic Gradient Colors -->
+    <color name="holographic_start">#FF6EC7</color>
+    <color name="holographic_mid">#A855F7</color>
+    <color name="holographic_end">#7B68EE</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#EAEAFF</color>
+    <color name="text_secondary">#9999CC</color>
+    <color name="text_tertiary">#666699</color>
+    <color name="text_on_accent">#0A0A1A</color>
+
+    <!-- Premium / Badge Colors -->
+    <color name="premium_gold">#FFD700</color>
+    <color name="free_badge">#39FF14</color>
+    <color name="locked_badge">#FF6EC7</color>
+
+    <!-- Button Colors -->
+    <color name="btn_add_whatsapp">#25D366</color>
+    <color name="btn_unlock">#A855F7</color>
+
+    <!-- Status Bar / System -->
+    <color name="status_bar_color">#050510</color>
+
+    <!-- Card Border Glow -->
+    <color name="card_border_glow">#3300FFFF</color>
+    <color name="card_border_premium_glow">#33FF00FF</color>
+
+    <!-- Ripple -->
+    <color name="ripple_neon">#4400FFFF</color>
+
+    <!-- White / Black -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

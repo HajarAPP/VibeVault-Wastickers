@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/card_sticker_pack"
+    android:padding="@dimen/card_padding"
+    android:layout_marginBottom="@dimen/spacing_sm"
+    android:foreground="@drawable/ripple_neon"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Top Row: Tray Icon + Pack Info + Badge -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Tray Icon -->
+        <ImageView
+            android:id="@+id/tray_icon"
+            android:layout_width="@dimen/tray_icon_size"
+            android:layout_height="@dimen/tray_icon_size"
+            android:scaleType="centerCrop"
+            android:contentDescription="Sticker pack icon" />
+
+        <!-- Pack Name + Sticker Count -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="@dimen/spacing_md">
+
+            <TextView
+                android:id="@+id/pack_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/VibeVault.Text.PackName" />
+
+            <TextView
+                android:id="@+id/pack_publisher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_caption"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/sticker_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/VibeVault.Text.PackInfo"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Badge (FREE / PREMIUM) -->
+        <TextView
+            android:id="@+id/pack_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_free"
+            style="@style/VibeVault.Badge.Free" />
+    </LinearLayout>
+
+    <!-- Action Button Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="@dimen/spacing_sm">
+
+        <!-- Lock Icon (visible for premium packs) -->
+        <ImageView
+            android:id="@+id/lock_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_lock"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/spacing_sm"
+            android:visibility="gone"
+            android:contentDescription="Locked" />
+
+        <!-- Already Added Indicator -->
+        <TextView
+            android:id="@+id/added_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/added_to_whatsapp"
+            android:textColor="@color/neon_green"
+            android:textSize="@dimen/text_caption"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/spacing_sm"
+            android:visibility="gone" />
+
+        <!-- Add to WhatsApp Button (for free/unlocked packs) -->
+        <Button
+            android:id="@+id/btn_add_whatsapp"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/add_to_whatsapp"
+            style="@style/VibeVault.Button.WhatsApp"
+            android:textSize="@dimen/text_caption"
+            android:minHeight="36dp"
+            android:visibility="visible" />
+
+        <!-- Unlock Button (for locked premium packs) -->
+        <Button
+            android:id="@+id/btn_unlock"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/unlock_pack"
+            style="@style/VibeVault.Button.Unlock"
+            android:textSize="@dimen/text_caption"
+            android:minHeight="36dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

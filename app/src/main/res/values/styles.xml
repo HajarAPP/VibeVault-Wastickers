@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Main App Theme — Dark Cyber/Y2K -->
+    <style name="Theme.VibeVault" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/neon_cyan</item>
+        <item name="colorPrimaryVariant">@color/neon_purple</item>
+        <item name="colorSecondary">@color/neon_pink</item>
+        <item name="colorSecondaryVariant">@color/holographic_end</item>
+        <item name="android:colorBackground">@color/cyber_bg_primary</item>
+        <item name="colorSurface">@color/cyber_bg_card</item>
+        <item name="colorOnPrimary">@color/text_on_accent</item>
+        <item name="colorOnSecondary">@color/text_on_accent</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/status_bar_color</item>
+        <item name="android:navigationBarColor">@color/cyber_bg_primary</item>
+        <item name="android:windowBackground">@color/cyber_bg_primary</item>
+    </style>
+
+    <!-- Card Style -->
+    <style name="VibeVault.Card">
+        <item name="android:background">@drawable/card_sticker_pack</item>
+        <item name="android:padding">@dimen/card_padding</item>
+    </style>
+
+    <!-- Button — Add to WhatsApp -->
+    <style name="VibeVault.Button.WhatsApp">
+        <item name="android:background">@drawable/btn_add_whatsapp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/btn_padding_h</item>
+        <item name="android:paddingEnd">@dimen/btn_padding_h</item>
+        <item name="android:minHeight">@dimen/btn_height</item>
+    </style>
+
+    <!-- Button — Unlock Premium -->
+    <style name="VibeVault.Button.Unlock">
+        <item name="android:background">@drawable/btn_unlock_premium</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/btn_padding_h</item>
+        <item name="android:paddingEnd">@dimen/btn_padding_h</item>
+        <item name="android:minHeight">@dimen/btn_height</item>
+    </style>
+
+    <!-- Badge — Free -->
+    <style name="VibeVault.Badge.Free">
+        <item name="android:textColor">@color/cyber_bg_primary</item>
+        <item name="android:textSize">@dimen/text_badge</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+
+    <!-- Badge — Premium -->
+    <style name="VibeVault.Badge.Premium">
+        <item name="android:textColor">@color/cyber_bg_primary</item>
+        <item name="android:textSize">@dimen/text_badge</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+
+    <!-- Pack Name Text -->
+    <style name="VibeVault.Text.PackName">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">@dimen/text_subtitle</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Pack Info Text -->
+    <style name="VibeVault.Text.PackInfo">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">@dimen/text_caption</item>
+    </style>
+</resources>

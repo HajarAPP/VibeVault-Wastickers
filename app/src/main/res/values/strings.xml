@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">VibeVault</string>
+    <string name="app_tagline">Stickers \u0026 Emoji</string>
+
+    <!-- Main Screen -->
+    <string name="sticker_packs_title">Sticker Packs</string>
+    <string name="free_badge">FREE</string>
+    <string name="premium_badge">PREMIUM</string>
+    <string name="sticker_count">%d stickers</string>
+    <string name="added_to_whatsapp">✓ Added</string>
+
+    <!-- Buttons -->
+    <string name="add_to_whatsapp">Add to WhatsApp</string>
+    <string name="unlock_pack">Unlock Pack</string>
+    <string name="watch_ad_to_unlock">Watch Ad to Unlock</string>
+    <string name="purchase_to_unlock">Purchase ($0.99)</string>
+
+    <!-- Premium Dialog -->
+    <string name="premium_dialog_title">🔒 Premium Pack</string>
+    <string name="premium_dialog_message">This sticker pack is premium. Unlock it by watching a short video ad or purchasing it.</string>
+    <string name="unlock_with_ad">🎬 Watch Video Ad (Free)</string>
+    <string name="unlock_with_purchase">💎 Purchase — $0.99</string>
+    <string name="cancel">Cancel</string>
+    <string name="pack_unlocked_toast">🎉 Pack unlocked! Enjoy your new stickers.</string>
+    <string name="rewarded_ad_not_ready">Ad is loading, please try again in a moment.</string>
+
+    <!-- WhatsApp Integration -->
+    <string name="add_pack_fail_prompt_update_whatsapp">Could not add the sticker pack. Make sure you have the latest version of WhatsApp installed.</string>
+    <string name="add_pack_fail_prompt_update_play_link">Update WhatsApp</string>
+    <string name="pack_already_added">This sticker pack is already added to WhatsApp.</string>
+    <string name="cannot_find_play_store">Could not find the Play Store.</string>
+    <string name="title_validation_error">Validation Error</string>
+
+    <!-- Details Screen -->
+    <string name="sticker_pack_details_title">Pack Details</string>
+    <string name="publisher_label">by %s</string>
+    <string name="total_size_label">Total size: %s</string>
+
+    <!-- General -->
+    <string name="loading">Loading…</string>
+    <string name="error_loading_packs">Error loading sticker packs. Please restart the app.</string>
+</resources>
