@@ -50,7 +50,16 @@ jobs:
 
       # ── 5. Build debug APK (no signing needed) ──
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.txt
+
+      # ── 5b. Upload build log on failure ──
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build-output.txt
+          retention-days: 7
 
       # ── 6. Rename APK ──
       - name: Rename APK
