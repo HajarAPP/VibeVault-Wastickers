@@ -50,17 +50,22 @@ jobs:
 
       # ── 5. Build debug APK ──
       - name: Build debug APK
+        id: build
         run: |
-          set -o pipefail
-          ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.txt
+          ./gradlew assembleDebug --stacktrace 2>&1 | tee $GITHUB_WORKSPACE/build-output.txt
+          exit ${PIPESTATUS[0]}
 
-      # ── 5b. Dump errors to summary on failure ──
-      - name: Dump build errors
-        if: failure()
+      # ── 5b. Dump errors on failure ──
+      - name: Dump build errors to summary
+        if: failure() && steps.build.outcome == 'failure'
         run: |
-          echo "### ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo "### ❌ Build Failed — Last 200 lines" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -150 build-output.txt >> $GITHUB_STEP_SUMMARY
+          if [ -f "$GITHUB_WORKSPACE/build-output.txt" ]; then
+            tail -200 $GITHUB_WORKSPACE/build-output.txt >> $GITHUB_STEP_SUMMARY
+          else
+            echo "build-output.txt not found" >> $GITHUB_STEP_SUMMARY
+          fi
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       # ── 6. Find and rename APK ──
@@ -68,17 +73,11 @@ jobs:
         run: |
           BUILD_NUMBER=${{ github.run_number }}
           APK_NAME="VibeVault-debug-build${BUILD_NUMBER}.apk"
-          echo "Searching for APK files..."
-          find app/build/outputs -name "*.apk" -type f
           APK_PATH=$(find app/build/outputs -name "*.apk" -type f | head -1)
           if [ -z "$APK_PATH" ]; then
-            echo "❌ No APK found in build outputs!"
-            ls -la app/build/outputs/ || echo "outputs dir not found"
-            ls -la app/build/outputs/apk/ || echo "apk dir not found"
-            ls -la app/build/outputs/apk/debug/ || echo "debug dir not found"
+            echo "No APK found!"
             exit 1
           fi
-          echo "Found APK: $APK_PATH"
           APK_DIR=$(dirname "$APK_PATH")
           mv "$APK_PATH" "${APK_DIR}/${APK_NAME}"
           echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
