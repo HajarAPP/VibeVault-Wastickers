@@ -76,8 +76,12 @@ jobs:
         run: |
           BUILD_NUMBER=${{ github.run_number }}
           APK_NAME="VibeVault-debug-build${BUILD_NUMBER}.apk"
-          mv app/build/outputs/apk/debug/app-debug.apk \
-             app/build/outputs/apk/debug/$APK_NAME
+          APK_PATH=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
+          if [ -z "$APK_PATH" ]; then
+            echo "No APK found!"
+            exit 1
+          fi
+          mv "$APK_PATH" "app/build/outputs/apk/debug/$APK_NAME"
           echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
 
       # ── 7. Upload APK artifact ──
