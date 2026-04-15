@@ -50,7 +50,17 @@ jobs:
 
       # ── 5. Build debug APK (no signing needed) ──
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.txt
+        run: |
+          set +e
+          ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.txt
+          BUILD_EXIT=$?
+          if [ $BUILD_EXIT -ne 0 ]; then
+            echo "### ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -100 build-output.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit $BUILD_EXIT
+          fi
 
       # ── 5b. Upload build log on failure ──
       - name: Upload build log
