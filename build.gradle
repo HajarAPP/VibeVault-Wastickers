@@ -5,15 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // هاد السطر هو اللي كيجيب الأدوات ديال أندرويد
         classpath 'com.android.tools.build:gradle:8.2.2'
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
     }
 }
 
