@@ -48,48 +48,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # ── 5. Build debug APK (no signing needed) ──
+      # ── 5. Build debug APK ──
       - name: Build debug APK
-        run: |
-          set +e
-          ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.txt
-          BUILD_EXIT=$?
-          if [ $BUILD_EXIT -ne 0 ]; then
-            echo "### ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            tail -100 build-output.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            exit $BUILD_EXIT
-          fi
+        run: ./gradlew assembleDebug --stacktrace
 
-      # ── 5b. Upload build log on failure ──
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build-output.txt
-          retention-days: 7
-
-      # ── 6. Rename APK ──
+      # ── 6. Find and rename APK ──
       - name: Rename APK
         run: |
           BUILD_NUMBER=${{ github.run_number }}
           APK_NAME="VibeVault-debug-build${BUILD_NUMBER}.apk"
-          APK_PATH=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
+          echo "Searching for APK files..."
+          find app/build/outputs -name "*.apk" -type f
+          APK_PATH=$(find app/build/outputs -name "*.apk" -type f | head -1)
           if [ -z "$APK_PATH" ]; then
-            echo "No APK found!"
+            echo "❌ No APK found in build outputs!"
+            ls -la app/build/outputs/ || echo "outputs dir not found"
+            ls -la app/build/outputs/apk/ || echo "apk dir not found"
+            ls -la app/build/outputs/apk/debug/ || echo "debug dir not found"
             exit 1
           fi
-          mv "$APK_PATH" "app/build/outputs/apk/debug/$APK_NAME"
+          echo "Found APK: $APK_PATH"
+          APK_DIR=$(dirname "$APK_PATH")
+          mv "$APK_PATH" "${APK_DIR}/${APK_NAME}"
           echo "APK_NAME=$APK_NAME" >> $GITHUB_ENV
+          echo "APK_DIR=$APK_DIR" >> $GITHUB_ENV
 
       # ── 7. Upload APK artifact ──
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: app/build/outputs/apk/debug/${{ env.APK_NAME }}
+          path: ${{ env.APK_DIR }}/${{ env.APK_NAME }}
           retention-days: 30
 
       # ── 8. Build summary ──
@@ -102,5 +91,5 @@ jobs:
           echo "| APK | \`${{ env.APK_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Build # | ${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
-          APK_SIZE=$(du -sh app/build/outputs/apk/debug/${{ env.APK_NAME }} | cut -f1)
+          APK_SIZE=$(du -sh "${{ env.APK_DIR }}/${{ env.APK_NAME }}" | cut -f1)
           echo "| Size | $APK_SIZE |" >> $GITHUB_STEP_SUMMARY
