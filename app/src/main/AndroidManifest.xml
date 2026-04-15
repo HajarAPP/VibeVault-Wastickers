@@ -4,12 +4,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- Required on Android 11+ (API 30+) for PackageManager to detect WhatsApp -->
-    <queries>
+<queries>
         <package android:name="com.whatsapp" />
         <package android:name="com.whatsapp.w4b" />
     </queries>
-
     <application
         android:name=".VibeVaultApp"
         android:allowBackup="true"

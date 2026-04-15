@@ -10,7 +10,20 @@ plugins {
 android {
     namespace 'com.vibevault.stickers'
     compileSdk 35
+android {
+    namespace 'com.vibevault.stickers'
+    compileSdk 35
 
+    // كتحط هنايا بالظبط (هذا هو السطر اللي سألتي عليه)
+    aaptOptions {
+        noCompress "webp"
+    }
+
+    defaultConfig {
+        applicationId "com.vibevault.stickers"
+        // ... باقي الكود
+    }
+}
     // CRITICAL: Prevent WebP compression — ContentProvider needs raw files
     aaptOptions {
         noCompress "webp"
