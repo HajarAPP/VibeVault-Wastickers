@@ -50,7 +50,18 @@ jobs:
 
       # ── 5. Build debug APK ──
       - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --stacktrace 2>&1 | tee build-output.txt
+
+      # ── 5b. Dump errors to summary on failure ──
+      - name: Dump build errors
+        if: failure()
+        run: |
+          echo "### ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -150 build-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       # ── 6. Find and rename APK ──
       - name: Rename APK
