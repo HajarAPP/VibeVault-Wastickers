@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace 'com.vibevault.stickers'
-    compileSdk 35
+    compileSdk 34
 
     // CRITICAL: Prevent WebP compression — ContentProvider needs raw files
     aaptOptions {
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.vibevault.stickers"
         minSdk 23
-        targetSdk 35
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
