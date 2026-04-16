@@ -33,12 +33,39 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+      - name: Build debug APK (capture full output)
+        id: build
+        continue-on-error: true
+        run: |
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee build-full.log
+          # Propagate exit code correctly after tee
+          exit ${PIPESTATUS[0]}
+
+      - name: Show first real error (if build failed)
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "====== FIRST 50 ERROR/EXCEPTION LINES ======"
+          grep -n -i -E "^(error:|exception|caused by|> task|what went wrong|build failed)" build-full.log | head -60 || true
+          echo ""
+          echo "====== LINES 1-100 OF BUILD LOG ======"
+          head -100 build-full.log
+          echo ""
+          echo "====== LINES AROUND 'BUILD FAILED' ======"
+          grep -n "BUILD FAILED" build-full.log | head -5 || true
+          exit 1
 
       - name: Upload APK
+        if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
+
+      - name: Upload build log (on failure)
+        if: steps.build.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build-full.log
+          retention-days: 7
