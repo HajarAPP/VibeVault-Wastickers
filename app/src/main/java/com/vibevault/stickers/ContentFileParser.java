@@ -9,6 +9,7 @@
  */
 
 package com.vibevault.stickers;
+import com.hajmidapp.vibevault.R;
 
 import android.text.TextUtils;
 import android.util.JsonReader;

@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Main App Theme — Dark Cyber/Y2K -->
-    <style name="Theme.VibeVault" parent="Theme.Material3.Dark.NoActionBar">
+    <!-- Main App Theme — Standard MaterialComponents Theme -->
+    <style name="Theme.VibeVault" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/neon_cyan</item>
         <item name="colorPrimaryVariant">@color/neon_purple</item>
+        <item name="colorOnPrimary">@color/black</item>
         <item name="colorSecondary">@color/neon_pink</item>
         <item name="colorSecondaryVariant">@color/holographic_end</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="android:colorBackground">@color/cyber_bg_primary</item>
         <item name="colorSurface">@color/cyber_bg_card</item>
-        <item name="colorOnPrimary">@color/text_on_accent</item>
-        <item name="colorOnSecondary">@color/text_on_accent</item>
         <item name="colorOnBackground">@color/text_primary</item>
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="android:statusBarColor">@color/status_bar_color</item>
-        <item name="android:navigationBarColor">@color/cyber_bg_primary</item>
-        <item name="android:windowBackground">@color/cyber_bg_primary</item>
     </style>
 
     <!-- Card Style -->

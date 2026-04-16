@@ -9,6 +9,7 @@
  */
 
 package com.vibevault.stickers;
+import com.hajmidapp.vibevault.R;
 
 import android.os.Parcel;
 import android.os.Parcelable;
