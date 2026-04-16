@@ -10,7 +10,6 @@
  */
 
 package com.vibevault.stickers;
-import com.hajmidapp.vibevault.R;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;

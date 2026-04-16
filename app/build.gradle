@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace 'com.hajmidapp.vibevault'
+    namespace 'com.vibevault.stickers'
     compileSdk 34
 
     // CRITICAL: Prevent WebP compression — ContentProvider needs raw files
@@ -17,7 +17,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.hajmidapp.vibevault"
+        applicationId "com.vibevault.stickers"
         minSdk 23
         targetSdk 34
         versionCode 1
