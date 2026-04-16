@@ -5,6 +5,8 @@
 
 package com.vibevault.stickers;
 
+import com.hajmidapp.vibevault.R;
+
 import android.app.Dialog;
 import android.os.Bundle;
 

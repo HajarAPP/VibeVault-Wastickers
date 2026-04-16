@@ -16,6 +16,8 @@
 
 package com.vibevault.stickers;
 
+import com.hajmidapp.vibevault.R;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
