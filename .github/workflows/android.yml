@@ -34,7 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon 2>&1 | tee build-full.log; exit ${PIPESTATUS[0]}
+        run: ./gradlew clean assembleDebug --stacktrace
 
       - name: Show build log — TOP 150 LINES (real error is here)
         if: always()
@@ -64,5 +64,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: VibeVault-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
