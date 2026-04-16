@@ -33,26 +33,34 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build debug APK (capture full output)
+      - name: Build debug APK
         id: build
         continue-on-error: true
-        run: |
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee build-full.log
-          # Propagate exit code correctly after tee
-          exit ${PIPESTATUS[0]}
+        run: ./gradlew assembleDebug --no-daemon 2>&1 | tee build-full.log; exit ${PIPESTATUS[0]}
 
-      - name: Show first real error (if build failed)
-        if: steps.build.outcome == 'failure'
+      - name: Show build log — TOP 150 LINES (real error is here)
+        if: always()
         run: |
-          echo "====== FIRST 50 ERROR/EXCEPTION LINES ======"
-          grep -n -i -E "^(error:|exception|caused by|> task|what went wrong|build failed)" build-full.log | head -60 || true
-          echo ""
-          echo "====== LINES 1-100 OF BUILD LOG ======"
-          head -100 build-full.log
-          echo ""
-          echo "====== LINES AROUND 'BUILD FAILED' ======"
-          grep -n "BUILD FAILED" build-full.log | head -5 || true
-          exit 1
+          echo "============================================================"
+          echo "TOP 150 LINES — actual error should be visible here:"
+          echo "============================================================"
+          head -150 build-full.log || echo "(no log file found)"
+
+      - name: Show build log — WHAT WENT WRONG section
+        if: always()
+        run: |
+          echo "============================================================"
+          echo "WHAT WENT WRONG:"
+          echo "============================================================"
+          awk '/\* What went wrong:/,/\* Try:/' build-full.log || echo "(no 'What went wrong' section found)"
+
+      - name: Upload full build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-full-log
+          path: build-full.log
+          retention-days: 7
 
       - name: Upload APK
         if: steps.build.outcome == 'success'
@@ -61,11 +69,3 @@ jobs:
           name: app-debug.apk
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
-
-      - name: Upload build log (on failure)
-        if: steps.build.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-log
-          path: build-full.log
-          retention-days: 7
