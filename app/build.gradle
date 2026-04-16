@@ -1,8 +1,6 @@
 /*
  * VibeVault — WhatsApp Stickers App
  * App-level build configuration
- * NOTE: Dependencies temporarily stripped to minimal set to diagnose CI build lock error.
- *       Fresco, AdMob, and Billing will be re-added once a clean APK is confirmed.
  */
 
 plugins {
@@ -41,8 +39,8 @@ android {
             shrinkResources false
         }
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -56,15 +54,39 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
+    packagingOptions {
+        // Resolve duplicate native lib errors from Fresco + AdMob
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        exclude 'lib/*/libnative-imagetranscoder.so'
+        exclude 'lib/*/libnative-filters.so'
+    }
 }
 
 dependencies {
-    // AndroidX — minimal set only
+    // AndroidX
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+
+    // Fresco — required for WhatsApp WebP sticker validation
+    // Pinned to 2.5.0 — most stable release for sticker apps; 3.x causes dependency conflicts
+    def fresco_version = '2.5.0'
+    implementation "com.facebook.fresco:fresco:$fresco_version"
+    implementation "com.facebook.fresco:webpsupport:$fresco_version"
+    implementation "com.facebook.fresco:animated-webp:$fresco_version"
+    implementation "com.facebook.fresco:animated-base:$fresco_version"
+
+    // Google Mobile Ads (AdMob)
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
+
+    // Google Play Billing (In-App Purchases)
+    implementation 'com.android.billingclient:billing:6.2.1'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

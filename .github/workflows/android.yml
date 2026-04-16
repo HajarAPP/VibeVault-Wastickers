@@ -33,12 +33,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Stop any existing Gradle daemons
-        run: ./gradlew --stop || true
-
-      - name: Delete local .gradle lock files
-        run: rm -rf ~/.gradle/caches/*/gc.properties ~/.gradle/caches/journal-* || true
-
       - name: Build debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
