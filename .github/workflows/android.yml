@@ -88,20 +88,25 @@ jobs:
           path: build-full.log
           retention-days: 7
 
-      # ── 9. Upload signed AAB ───────────────────────────────────
+      # ── 9. Show output files (debug aid) ────────────────────
+      - name: List bundle output directory
+        if: success()
+        run: find app/build/outputs -type f \( -name "*.aab" -o -name "mapping.txt" \) | sort
+
+      # ── 10. Upload signed AAB ──────────────────────────────────
       - name: Upload Release AAB
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: VibeVault-Release-AAB
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: app/build/outputs/bundle/**/*.aab
           retention-days: 30
 
-      # ── 10. Upload mapping.txt (for crash deobfuscation) ───────
+      # ── 11. Upload mapping.txt (for crash deobfuscation) ───────
       - name: Upload R8 mapping file
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: VibeVault-Mapping
-          path: app/build/outputs/mapping/release/mapping.txt
+          path: app/build/outputs/mapping/**/*.txt
           retention-days: 30
