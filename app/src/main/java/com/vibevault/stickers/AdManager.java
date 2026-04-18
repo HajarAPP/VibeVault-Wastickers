@@ -46,23 +46,19 @@ public class AdManager {
     private static final String TAG = "AdManager";
 
     // ═══════════════════════════════════════════════════════════════════
-    //  TEST AD UNIT IDs — REPLACE WITH REAL IDs BEFORE PUBLISHING!
+    //  PRODUCTION AD UNIT IDs — VibeVault (ca-app-pub-5531227541272550)
     //
-    //  These are Google's official test ad units. Using them during
-    //  development is REQUIRED to avoid AdMob policy violations.
-    //
-    //  To get your real IDs:
-    //    1. Go to https://admob.google.com
-    //    2. Register your app
-    //    3. Create ad units for Banner, Interstitial, and Rewarded
-    //    4. Replace the strings below
+    //  App ID:         ca-app-pub-5531227541272550~7567843911
+    //  Banner:         ca-app-pub-5531227541272550/7734318697
+    //  Interstitial:   ca-app-pub-5531227541272550/1002435562
+    //  Rewarded:       ca-app-pub-5531227541272550/2481992017
     // ═══════════════════════════════════════════════════════════════════
     private static final String BANNER_AD_UNIT_ID =
-            "ca-app-pub-3940256099942544/6300978111";
+            "ca-app-pub-5531227541272550/7734318697";
     private static final String INTERSTITIAL_AD_UNIT_ID =
-            "ca-app-pub-3940256099942544/1033173712";
+            "ca-app-pub-5531227541272550/1002435562";
     private static final String REWARDED_AD_UNIT_ID =
-            "ca-app-pub-3940256099942544/5224354917";
+            "ca-app-pub-5531227541272550/2481992017";
 
     // Maximum number of automatic retry attempts for failed ad loads
     private static final int MAX_RETRY_COUNT = 3;
@@ -318,8 +314,8 @@ public class AdManager {
             });
 
             mRewardedAd.show(activity, rewardItem -> {
-                Log.d(TAG, "User earned reward: " + rewardItem.getAmount()
-                        + " " + rewardItem.getType());
+                Log.d(TAG, "✅ Reward granted: " + rewardItem.getAmount()
+                        + "x " + rewardItem.getType() + " — unlocking pack.");
                 callback.onReward();
             });
         } else {

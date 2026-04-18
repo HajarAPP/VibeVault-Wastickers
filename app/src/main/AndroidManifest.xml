@@ -17,10 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VibeVault">
 
-        <!-- AdMob Application ID (TEST ID — replace with real ID before publishing!) -->
+        <!-- AdMob Application ID — Production ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-5531227541272550~7567843911" />
 
         <!-- WhatsApp Sticker Content Provider -->
         <provider

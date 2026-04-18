@@ -1,8 +1,16 @@
 # ╔══════════════════════════════════════════════════════════════╗
-# ║          VibeVault — Android CI Build Workflow               ║
+# ║       VibeVault — Android CI Build & Sign Workflow           ║
 # ╚══════════════════════════════════════════════════════════════╝
+#
+# Produces a signed Release AAB (.aab) ready for Google Play upload.
+#
+# Required GitHub Secrets (Settings → Secrets and variables → Actions):
+#   KEYSTORE_BASE64     — base64-encoded .jks keystore file
+#   KEYSTORE_PASSWORD   — keystore store password
+#   KEY_ALIAS           — key alias inside the keystore (e.g. "vibevault")
+#   KEY_PASSWORD        — key password (often same as KEYSTORE_PASSWORD)
 
-name: Android CI — Build APK
+name: Android CI — Build & Sign Release AAB
 
 on:
   push:
@@ -17,25 +25,52 @@ concurrency:
 
 jobs:
   build:
-    name: Build APK
+    name: Build & Sign AAB
     runs-on: ubuntu-latest
 
     steps:
+      # ── 1. Checkout ────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ── 2. Java ────────────────────────────────────────────────
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # ── 3. Gradle cache ────────────────────────────────────────
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ── 4. Decode Keystore ─────────────────────────────────────
+      - name: Decode keystore from base64 secret
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/vibevault-release.jks
+          echo "Keystore decoded successfully."
+
+      # ── 5. Grant execute permission ────────────────────────────
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build debug APK
-        run: ./gradlew clean assembleDebug --stacktrace 2>&1 | tee build-full.log
+      # ── 6. Build signed Release AAB ────────────────────────────
+      - name: Build signed Release AAB
+        env:
+          KEYSTORE_FILE:     ${{ github.workspace }}/vibevault-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew clean bundleRelease --stacktrace 2>&1 | tee build-full.log
 
+      # ── 7. Show error section on failure ───────────────────────
       - name: Show build log — WHAT WENT WRONG section
         if: failure()
         run: |
@@ -44,6 +79,7 @@ jobs:
           echo "============================================================"
           grep -A 30 "FAILURE\|What went wrong" build-full.log || echo "(no error section found)"
 
+      # ── 8. Upload full build log (always) ─────────────────────
       - name: Upload full build log
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,10 +88,20 @@ jobs:
           path: build-full.log
           retention-days: 7
 
-      - name: Upload APK
+      # ── 9. Upload signed AAB ───────────────────────────────────
+      - name: Upload Release AAB
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: VibeVault-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: VibeVault-Release-AAB
+          path: app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      # ── 10. Upload mapping.txt (for crash deobfuscation) ───────
+      - name: Upload R8 mapping file
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VibeVault-Mapping
+          path: app/build/outputs/mapping/release/mapping.txt
           retention-days: 30

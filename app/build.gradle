@@ -21,7 +21,7 @@ android {
         minSdk 23
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -33,6 +33,19 @@ android {
                 "\"${contentProviderAuthority}\"")
     }
 
+    signingConfigs {
+        release {
+            // Credentials are injected via GitHub Secrets as environment variables.
+            // When running locally without these vars, bundleRelease/assembleRelease
+            // will fail (expected) — use assembleDebug for local development.
+            def ksFile = System.getenv('KEYSTORE_FILE')
+            storeFile     ksFile ? file(ksFile) : null
+            storePassword System.getenv('KEYSTORE_PASSWORD') ?: ''
+            keyAlias      System.getenv('KEY_ALIAS')         ?: ''
+            keyPassword   System.getenv('KEY_PASSWORD')      ?: ''
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -42,6 +55,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
