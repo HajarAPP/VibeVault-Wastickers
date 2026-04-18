@@ -17,7 +17,7 @@
 
 package com.vibevault.stickers;
 
-import com.hajmidapp.vibevault.R;
+import com.vibevault.stickers.R;
 
 import android.content.Intent;
 import android.os.Bundle;

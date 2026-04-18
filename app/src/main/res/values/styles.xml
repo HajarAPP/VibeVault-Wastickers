@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Main App Theme — Standard MaterialComponents Theme -->
+    <!-- Main App Theme — MaterialComponents DayNight (safe standard parent) -->
     <style name="Theme.VibeVault" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/neon_cyan</item>
-        <item name="colorPrimaryVariant">@color/neon_purple</item>
+        <item name="colorPrimaryContainer">@color/neon_purple</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorSecondary">@color/neon_pink</item>
-        <item name="colorSecondaryVariant">@color/holographic_end</item>
+        <item name="colorSecondaryContainer">@color/holographic_end</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:colorBackground">@color/cyber_bg_primary</item>
         <item name="colorSurface">@color/cyber_bg_card</item>
@@ -15,57 +15,65 @@
         <item name="android:statusBarColor">@color/status_bar_color</item>
     </style>
 
+    <!--
+      ═══════════════════════════════════════════════════════════
+      Base style for dot-notation inheritance.
+      Android resolves  VibeVault.X  by looking for a parent
+      style named "VibeVault".  This empty base satisfies it.
+      ═══════════════════════════════════════════════════════════
+    -->
+    <style name="VibeVault" parent="" />
+
     <!-- Card Style -->
     <style name="VibeVault.Card">
         <item name="android:background">@drawable/card_sticker_pack</item>
         <item name="android:padding">@dimen/card_padding</item>
     </style>
 
-    <!-- Button — Add to WhatsApp -->
-    <style name="VibeVault.Button.WhatsApp">
-        <item name="android:background">@drawable/btn_add_whatsapp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/text_body</item>
+    <!-- ── Badge Base (required parent for VibeVault.Badge.Free / .Premium) ── -->
+    <style name="VibeVault.Badge">
         <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingStart">@dimen/btn_padding_h</item>
-        <item name="android:paddingEnd">@dimen/btn_padding_h</item>
-        <item name="android:minHeight">@dimen/btn_height</item>
-    </style>
-
-    <!-- Button — Unlock Premium -->
-    <style name="VibeVault.Button.Unlock">
-        <item name="android:background">@drawable/btn_unlock_premium</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingStart">@dimen/btn_padding_h</item>
-        <item name="android:paddingEnd">@dimen/btn_padding_h</item>
-        <item name="android:minHeight">@dimen/btn_height</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
     </style>
 
     <!-- Badge — Free -->
     <style name="VibeVault.Badge.Free">
         <item name="android:textColor">@color/cyber_bg_primary</item>
         <item name="android:textSize">@dimen/text_badge</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
     </style>
 
     <!-- Badge — Premium -->
     <style name="VibeVault.Badge.Premium">
         <item name="android:textColor">@color/cyber_bg_primary</item>
         <item name="android:textSize">@dimen/text_badge</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
     </style>
+
+    <!-- ── Button Base (required parent for VibeVault.Button.WhatsApp / .Unlock) ── -->
+    <style name="VibeVault.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/btn_padding_h</item>
+        <item name="android:paddingEnd">@dimen/btn_padding_h</item>
+        <item name="android:minHeight">@dimen/btn_height</item>
+    </style>
+
+    <!-- Button — Add to WhatsApp -->
+    <style name="VibeVault.Button.WhatsApp">
+        <item name="android:background">@drawable/btn_add_whatsapp</item>
+    </style>
+
+    <!-- Button — Unlock Premium -->
+    <style name="VibeVault.Button.Unlock">
+        <item name="android:background">@drawable/btn_unlock_premium</item>
+    </style>
+
+    <!-- ── Text Base (required parent for VibeVault.Text.PackName / .PackInfo) ── -->
+    <style name="VibeVault.Text" />
 
     <!-- Pack Name Text -->
     <style name="VibeVault.Text.PackName">

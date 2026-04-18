@@ -34,23 +34,15 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew clean assembleDebug --no-daemon
-
-      - name: Show build log — TOP 150 LINES (real error is here)
-        if: always()
-        run: |
-          echo "============================================================"
-          echo "TOP 150 LINES — actual error should be visible here:"
-          echo "============================================================"
-          head -150 build-full.log || echo "(no log file found)"
+        run: ./gradlew clean assembleDebug --stacktrace 2>&1 | tee build-full.log
 
       - name: Show build log — WHAT WENT WRONG section
-        if: always()
+        if: failure()
         run: |
           echo "============================================================"
           echo "WHAT WENT WRONG:"
           echo "============================================================"
-          awk '/\* What went wrong:/,/\* Try:/' build-full.log || echo "(no 'What went wrong' section found)"
+          grep -A 30 "FAILURE\|What went wrong" build-full.log || echo "(no error section found)"
 
       - name: Upload full build log
         if: always()
@@ -61,6 +53,7 @@ jobs:
           retention-days: 7
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: VibeVault-APK
