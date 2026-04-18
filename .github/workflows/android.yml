@@ -93,20 +93,11 @@ jobs:
         if: always()
         run: ls -R app/build/outputs/ || true
 
-      # ── 10. Upload signed AAB ──────────────────────────────────
-      - name: Upload Release AAB
+      # ── 10. Upload All Outputs (AAB & Mapping) ───────────────
+      - name: Upload All Build Outputs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: VibeVault-Release-AAB
-          path: app/build/outputs/**/*.aab
-          retention-days: 30
-
-      # ── 11. Upload mapping.txt (for crash deobfuscation) ───────
-      - name: Upload R8 mapping file
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: VibeVault-Mapping
-          path: app/build/outputs/**/*.txt
+          name: VibeVault-All-Outputs
+          path: app/build/outputs/
           retention-days: 30
