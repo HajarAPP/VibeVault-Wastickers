@@ -50,6 +50,7 @@ class StickerPackValidator {
     private static final int ANIMATED_STICKER_TOTAL_DURATION_MAX = 10 * 1000; // ms
     private static final String PLAY_STORE_DOMAIN = "play.google.com";
     private static final String APPLE_STORE_DOMAIN = "itunes.apple.com";
+    private static final String APPLE_STORE_DOMAIN_NEW = "apps.apple.com";
 
     /**
      * Checks whether a sticker pack contains valid data
@@ -86,8 +87,8 @@ class StickerPackValidator {
         if (!TextUtils.isEmpty(stickerPack.iosAppStoreLink) && !isValidWebsiteUrl(stickerPack.iosAppStoreLink)) {
             throw new IllegalStateException("Make sure to include http or https in url links, ios app store link is not a valid url: " + stickerPack.iosAppStoreLink);
         }
-        if (!TextUtils.isEmpty(stickerPack.iosAppStoreLink) && !isURLInCorrectDomain(stickerPack.iosAppStoreLink, APPLE_STORE_DOMAIN)) {
-            throw new IllegalStateException("iOS app store link should use app store domain: " + APPLE_STORE_DOMAIN);
+        if (!TextUtils.isEmpty(stickerPack.iosAppStoreLink) && !isURLInCorrectDomain(stickerPack.iosAppStoreLink, APPLE_STORE_DOMAIN) && !isURLInCorrectDomain(stickerPack.iosAppStoreLink, APPLE_STORE_DOMAIN_NEW)) {
+            throw new IllegalStateException("iOS app store link should use app store domain: " + APPLE_STORE_DOMAIN + " or " + APPLE_STORE_DOMAIN_NEW);
         }
         if (!TextUtils.isEmpty(stickerPack.licenseAgreementWebsite) && !isValidWebsiteUrl(stickerPack.licenseAgreementWebsite)) {
             throw new IllegalStateException("Make sure to include http or https in url links, license agreement link is not a valid url: " + stickerPack.licenseAgreementWebsite);
