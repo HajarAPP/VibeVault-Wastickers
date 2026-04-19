@@ -1,4 +1,4 @@
-name: Android CI — Build & Sign Release AAB
+name: Android CI — Build & Sign Release AAB + APK
 
 on:
   push:
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build & Sign AAB
+    name: Build & Sign AAB + APK
     runs-on: ubuntu-latest
 
     steps:
@@ -55,7 +55,8 @@ jobs:
           KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
         run: |
           set -o pipefail
-          ./gradlew clean bundleRelease --stacktrace --info 2>&1 | tee build.log
+          # Build both the AAB (Play Store) and APK (sideload/testing) in one pass
+          ./gradlew clean bundleRelease assembleRelease --stacktrace --info 2>&1 | tee build.log
           echo "Gradle exit code: $?"
 
       - name: List ALL build outputs (always runs)
@@ -76,6 +77,15 @@ jobs:
         with:
           name: VibeVault-Release-AAB
           path: "**/*.aab"
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload Release APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VibeVault-Release-APK
+          path: "app/build/outputs/apk/release/*.apk"
           if-no-files-found: error
           retention-days: 30
 
