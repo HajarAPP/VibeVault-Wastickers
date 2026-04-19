@@ -39,8 +39,13 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
  *   3. Call show methods when needed
  *   4. Call destroy() in Activity.onDestroy() to release resources
  *
- * All ad unit IDs below are Google's official TEST IDs.
- * You MUST replace them with your real AdMob IDs before publishing to the Play Store.
+ * All ad unit IDs below are PRODUCTION IDs for the VibeVault AdMob account.
+ *
+ * Rewarded Ad Configuration:
+ *   Name:  "Unlock Sticker"
+ *   Value: 1
+ *   Logic: When the user finishes watching the rewarded video, the "Unlock Sticker"
+ *          reward is triggered to grant access to the locked sticker pack.
  */
 public class AdManager {
     private static final String TAG = "AdManager";
@@ -314,8 +319,10 @@ public class AdManager {
             });
 
             mRewardedAd.show(activity, rewardItem -> {
-                Log.d(TAG, "✅ Reward granted: " + rewardItem.getAmount()
-                        + "x " + rewardItem.getType() + " — unlocking pack.");
+                // "Unlock Sticker" reward granted — value: 1
+                Log.d(TAG, "✅ 'Unlock Sticker' reward granted: " + rewardItem.getAmount()
+                        + "x " + rewardItem.getType()
+                        + " — unlocking sticker pack for user.");
                 callback.onReward();
             });
         } else {
