@@ -50,12 +50,16 @@ jobs:
           KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean bundleRelease --stacktrace 2>&1 | tee build.log
 
+      - name: Find AAB file
+        if: success()
+        run: find app/build/outputs/ -name "*.aab" | tee aab_location.txt
+
       - name: Upload Release AAB
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: VibeVault-Release-AAB
-          path: "**/build/outputs/bundle/release/*.aab"
+          path: app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
       - name: Upload build log on failure
