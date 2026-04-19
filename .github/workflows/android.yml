@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: VibeVault-Release-AAB
-          path: app/build/outputs/**/*.aab
+          path: "**/*.aab"
           if-no-files-found: error
           retention-days: 30
 
