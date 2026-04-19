@@ -39,6 +39,11 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/vibevault-release.jks
 
+      - name: Verify keystore decoded
+        run: |
+          ls -lh ${{ github.workspace }}/vibevault-release.jks
+          echo "Keystore size: $(stat -c%s ${{ github.workspace }}/vibevault-release.jks) bytes"
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -48,11 +53,22 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
-        run: ./gradlew clean bundleRelease --stacktrace 2>&1 | tee build.log
+        run: |
+          set -o pipefail
+          ./gradlew clean bundleRelease --stacktrace --info 2>&1 | tee build.log
+          echo "Gradle exit code: $?"
 
-      - name: Find AAB file
-        if: success()
-        run: find . -name "*.aab"
+      - name: List ALL build outputs (always runs)
+        if: always()
+        run: |
+          echo "=== app/build/outputs/ ==="
+          ls -R app/build/outputs/ 2>/dev/null || echo "app/build/outputs/ does not exist!"
+          echo ""
+          echo "=== find . -name *.aab ==="
+          find . -name "*.aab" 2>/dev/null || echo "No .aab files found anywhere!"
+          echo ""
+          echo "=== find . -name *.apk ==="
+          find . -name "*.apk" 2>/dev/null || echo "No .apk files found anywhere!"
 
       - name: Upload Release AAB
         if: success()
@@ -63,10 +79,11 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload build log on failure
-        if: failure()
+      - name: Upload build log (always)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-failure-log
+          name: build-log
           path: build.log
+          if-no-files-found: ignore
           retention-days: 7
