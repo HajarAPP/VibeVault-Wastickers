@@ -54,14 +54,111 @@ jobs:
       # ── 4. Decode Keystore ─────────────────────────────────────
       - name: Decode keystore from base64 secret
         run: |
+          if [ -z "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "❌ ERROR: KEYSTORE_BASE64 secret is empty or not set!"
+            echo "   → Go to: https://github.com/${{ github.repository }}/settings/secrets/actions"
+            echo "   → Create secret: KEYSTORE_BASE64"
+            echo "   → Value: run 'base64 -i your-keystore.jks' on macOS or 'base64 your-keystore.jks' on Linux"
+            exit 1
+          fi
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/vibevault-release.jks
-          echo "Keystore decoded successfully."
+          echo "✅ Keystore decoded successfully."
 
-      # ── 5. Grant execute permission ────────────────────────────
+      # ── 5. Verify Keystore (DEBUG) ─────────────────────────────
+      # This step validates the keystore file BEFORE the build.
+      # It checks: file exists, file size > 0, password works, alias exists.
+      - name: "🔍 Verify Keystore & Secrets"
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          KEYSTORE_PATH="${{ github.workspace }}/vibevault-release.jks"
+          echo "════════════════════════════════════════════════════"
+          echo "  Keystore Diagnostics"
+          echo "════════════════════════════════════════════════════"
+
+          # Check 1: File exists
+          if [ ! -f "$KEYSTORE_PATH" ]; then
+            echo "❌ FAIL: Keystore file does not exist at: $KEYSTORE_PATH"
+            exit 1
+          fi
+          echo "✅ File exists: $KEYSTORE_PATH"
+
+          # Check 2: File size > 0
+          FILE_SIZE=$(stat -c%s "$KEYSTORE_PATH" 2>/dev/null || stat -f%z "$KEYSTORE_PATH" 2>/dev/null)
+          if [ "$FILE_SIZE" -eq 0 ] 2>/dev/null; then
+            echo "❌ FAIL: Keystore file is 0 bytes (empty). KEYSTORE_BASE64 secret is likely wrong."
+            exit 1
+          fi
+          echo "✅ File size: $FILE_SIZE bytes"
+
+          # Check 3: SHA-256 hash (for reference/comparison)
+          echo "   SHA-256: $(sha256sum "$KEYSTORE_PATH" | cut -d' ' -f1)"
+
+          # Check 4: Secrets are not empty
+          if [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "❌ FAIL: KEYSTORE_PASSWORD secret is empty or not set!"
+            exit 1
+          fi
+          echo "✅ KEYSTORE_PASSWORD is set (length: ${#KEYSTORE_PASSWORD} chars)"
+
+          if [ -z "$KEY_ALIAS" ]; then
+            echo "❌ FAIL: KEY_ALIAS secret is empty or not set!"
+            exit 1
+          fi
+          echo "✅ KEY_ALIAS is set: '$KEY_ALIAS'"
+
+          if [ -z "$KEY_PASSWORD" ]; then
+            echo "❌ FAIL: KEY_PASSWORD secret is empty or not set!"
+            exit 1
+          fi
+          echo "✅ KEY_PASSWORD is set (length: ${#KEY_PASSWORD} chars)"
+
+          # Check 5: Verify keystore password and list aliases
+          echo ""
+          echo "── Verifying keystore password & listing aliases ──"
+          if keytool -list -keystore "$KEYSTORE_PATH" -storepass "$KEYSTORE_PASSWORD" -v 2>&1; then
+            echo "✅ Keystore password is CORRECT."
+          else
+            echo ""
+            echo "❌ FAIL: Cannot open keystore!"
+            echo "   Possible causes:"
+            echo "   1. KEYSTORE_PASSWORD is wrong"
+            echo "   2. KEYSTORE_BASE64 is corrupted (not a valid JKS/PKCS12 file)"
+            echo "   3. The base64 encoding included line breaks or extra characters"
+            echo ""
+            echo "   To fix: On your Mac, run:"
+            echo "     keytool -list -keystore your-keystore.jks -storepass YOUR_PASSWORD"
+            echo "   If that works, re-encode:"
+            echo "     base64 -i your-keystore.jks | pbcopy"
+            echo "   Paste that into the KEYSTORE_BASE64 secret."
+            exit 1
+          fi
+
+          # Check 6: Verify the specific alias exists
+          echo ""
+          echo "── Checking alias '$KEY_ALIAS' exists ──"
+          if keytool -list -keystore "$KEYSTORE_PATH" -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" 2>&1; then
+            echo "✅ Alias '$KEY_ALIAS' found in keystore."
+          else
+            echo ""
+            echo "❌ FAIL: Alias '$KEY_ALIAS' NOT found in keystore!"
+            echo "   The aliases available in your keystore are listed above."
+            echo "   Update the KEY_ALIAS secret to match one of those aliases."
+            exit 1
+          fi
+
+          echo ""
+          echo "════════════════════════════════════════════════════"
+          echo "  ✅ ALL CHECKS PASSED — Keystore is valid"
+          echo "════════════════════════════════════════════════════"
+
+      # ── 6. Grant execute permission ────────────────────────────
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # ── 6. Build signed Release AAB ────────────────────────────
+      # ── 7. Build signed Release AAB ────────────────────────────
       - name: Build signed Release AAB
         env:
           KEYSTORE_FILE:     ${{ github.workspace }}/vibevault-release.jks
@@ -70,12 +167,12 @@ jobs:
           KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew clean bundleRelease --stacktrace
 
-      # ── 9. Show output files (debug aid) ────────────────────
+      # ── 8. Show output files (debug aid) ────────────────────
       - name: List bundle output directory
         if: always()
         run: ls -R app/build/outputs/ || true
 
-      # ── 10. Upload All Outputs (AAB & Mapping) ───────────────
+      # ── 9. Upload All Outputs (AAB & Mapping) ───────────────
       - name: Upload All Build Outputs
         if: always()
         uses: actions/upload-artifact@v4
