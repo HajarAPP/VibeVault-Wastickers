@@ -10,10 +10,10 @@
  *   - Premium packs start locked and are unlocked via rewarded ad or IAP.
  *   - Supports a listener pattern so UI can react to unlock events.
  *
- * Package: com.vibevault.stickers
+ * Package: com.hajarapp.vibevault
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
 import android.content.Context;
 import android.content.SharedPreferences;

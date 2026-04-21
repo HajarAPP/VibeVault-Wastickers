@@ -8,7 +8,7 @@
  * Modified for VibeVault by VibeVault Team.
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
 import android.os.Parcel;
 import android.os.Parcelable;

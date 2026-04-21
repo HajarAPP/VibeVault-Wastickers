@@ -1,0 +1,94 @@
+name: Build Signed Release AAB
+
+on:
+  workflow_dispatch:         # Trigger manually from GitHub Actions UI
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'app/**'
+      - 'build.gradle'
+      - 'app/build.gradle'
+      - '.github/workflows/build-aab.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-aab:
+    name: Build & Sign Release AAB
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ─────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Java ─────────────────────────────────────────────────────────────
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # ── 3. Gradle cache ─────────────────────────────────────────────────────
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # ── 4. Keystore ─────────────────────────────────────────────────────────
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ github.workspace }}/vibevault-release.jks
+
+      - name: Verify keystore decoded
+        run: |
+          ls -lh ${{ github.workspace }}/vibevault-release.jks
+          echo "Keystore size: $(stat -c%s ${{ github.workspace }}/vibevault-release.jks) bytes"
+
+      # ── 5. Build ─────────────────────────────────────────────────────────────
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build signed Release AAB
+        env:
+          KEYSTORE_FILE:     ${{ github.workspace }}/vibevault-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS:         ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD:      ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -o pipefail
+          ./gradlew clean bundleRelease --stacktrace 2>&1 | tee build.log
+          echo "Exit code: $?"
+
+      # ── 6. Diagnostics ───────────────────────────────────────────────────────
+      - name: List build outputs
+        if: always()
+        run: |
+          echo "=== find .aab files ==="
+          find . -name "*.aab" 2>/dev/null || echo "No .aab files found!"
+
+      # ── 7. Upload artifacts ──────────────────────────────────────────────────
+      - name: Upload Release AAB
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VibeVault-Release-AAB-${{ github.run_number }}
+          path: "**/*.aab"
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log-${{ github.run_number }}
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7

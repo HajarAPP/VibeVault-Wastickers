@@ -7,10 +7,10 @@
  *   - Interstitial Ads (shown on "Add to WhatsApp" action)
  *   - Rewarded Video Ads (shown to unlock premium packs)
  *
- * Package: com.vibevault.stickers
+ * Package: com.hajarapp.vibevault
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
 import android.app.Activity;
 import android.content.Context;

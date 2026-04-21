@@ -12,8 +12,8 @@
 -keep class com.android.billingclient.** { *; }
 
 # Keep model classes for Parcelable
--keep class com.vibevault.stickers.StickerPack { *; }
--keep class com.vibevault.stickers.Sticker { *; }
+-keep class com.hajarapp.vibevault.StickerPack { *; }
+-keep class com.hajarapp.vibevault.Sticker { *; }
 
 # General Android rules
 -keepattributes Signature

@@ -11,12 +11,12 @@
  *   - "Add to WhatsApp" button with Interstitial Ad flow
  *   - Navigation back via toolbar
  *
- * Package: com.vibevault.stickers
+ * Package: com.hajarapp.vibevault
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
-import com.vibevault.stickers.R;
+import com.hajarapp.vibevault.R;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

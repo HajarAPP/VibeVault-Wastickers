@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  *
  * Modified for VibeVault by VibeVault Team.
- * Package: com.vibevault.stickers
+ * Package: com.hajarapp.vibevault
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;

@@ -3,7 +3,7 @@
  * Copyright (c) 2026 VibeVault. All rights reserved.
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
 import android.app.Application;
 

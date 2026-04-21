@@ -3,9 +3,9 @@
  * Copyright (c) 2026 VibeVault. All rights reserved.
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
-import com.vibevault.stickers.R;
+import com.hajarapp.vibevault.R;
 
 import android.app.Dialog;
 import android.os.Bundle;

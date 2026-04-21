@@ -12,12 +12,12 @@
  *   - Navigates to StickerPackDetailsActivity on pack tap
  *   - Manages ad lifecycle (resume/pause/destroy)
  *
- * Package: com.vibevault.stickers
+ * Package: com.hajarapp.vibevault
  */
 
-package com.vibevault.stickers;
+package com.hajarapp.vibevault;
 
-import com.vibevault.stickers.R;
+import com.hajarapp.vibevault.R;
 
 import android.content.Intent;
 import android.os.Bundle;
