@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace 'com.hajarapp.vibevault'
-    compileSdk 34
+    compileSdk 35
 
     // CRITICAL: Prevent WebP compression — ContentProvider needs raw files
     aaptOptions {
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.hajarapp.vibevault"
         minSdk 23
-        targetSdk 34
+        targetSdk 35
         versionCode 1
         versionName "1.0.0"
 
